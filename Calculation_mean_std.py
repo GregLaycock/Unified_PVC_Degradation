@@ -4,7 +4,7 @@
 # In[1]:
 
 from datahandling import DataFile, alldatafiles, cuts, trim
-
+from numpy import mean,std
 
 
 # In[2]:
@@ -35,23 +35,23 @@ for f in files:
 
 # In[4]:
 
-print 'mean torque:', mean(t_means)
-print 'mean temperature:', mean(T_means)
-print 'standard deviation torque:', mean(t_stds)
-print 'standard deviation temperature:', mean(T_stds)
+print('mean torque:', mean(t_means))
+print('mean temperature:', mean(T_means))
+print('standard deviation torque:', mean(t_stds))
+print('standard deviation temperature:', mean(T_stds))
 
 
 # In[5]:
 
-meantorgue=mean(t_means)
-meantemp=mean(T_means)
-std_torgue=mean(t_stds)
-std_temp=mean(T_stds)
+meantorgue = mean(t_means)
+meantemp = mean(T_means)
+std_torgue = mean(t_stds)
+std_temp = mean(T_stds)
 
 
 # In[9]:
 
-from numpy import mean
+
 
 
 # In[ ]:

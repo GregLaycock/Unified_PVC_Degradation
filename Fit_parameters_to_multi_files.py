@@ -79,15 +79,15 @@ with PdfPages('all_curves_14.pdf') as pdf:
                 p_best = p
                 smallest_int_error = int_abs_error
             
-            print j + 1
+            print(j + 1)
             
         #Storing parameter and error values
         all_ps.append(p_best)
         all_errors.append(smallest_error)
         all_int_errors.append(smallest_int_error)
         
-        print 'Completed Fit ',(i + 1)
-        print '__________________________'
+        print('Completed Fit ',(i + 1))
+        print('__________________________')
         
         #Plotting to pdf
         curves = model_curves(p_best, time_data)
@@ -125,8 +125,8 @@ with PdfPages('all_curves_14.pdf') as pdf:
         pdf.savefig(fig_species)
 
 elapsed = tm() - t
-print '*******************'
-print 'elapsed time (min) =', elapsed/60.
+print('*******************')
+print('elapsed time (min) =', elapsed/60.)
 
 
 # #### Generating parameter vectors and plotting
