@@ -11,7 +11,7 @@ from model_parameters import parameters, parameter_vectors, unpack_parameters, r
 from Simulation import torque_curve, fcn2min_torque, fcn2min, model_curves, joined_curves
 from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
-from numpy import append
+from numpy import append,trapz
 from Adjust_Kinetics import *
 
 
@@ -94,7 +94,7 @@ with PdfPages('all_curves_14.pdf') as pdf:
    #     HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm, mu, torque = curves
         
         title = 'Run ' + str(i + 1) + ', LDH type: ' + LDH_type + ', initial LDH: ' + str(LDH_0)
-        
+        from matplotlib.pyplot import *
         fig_torque = figure()
         fig_torque.suptitle(title)
         plot(time_data, curves['Torq'], label='fitted torque curve')
