@@ -1,18 +1,11 @@
 # stoichiometric matrix
 from datahandling import DataFile, alldatafiles, cuts, trim
 from numpy import mean,std
+from Adjust_Kinetics import *
+from PVC_deg_kinetics import *
 
-    
-def stoyk():
-    from numpy import array
-    #reaction kinetics parameters
-    n = 10.
-    return array([[-n, -1., 0., 0., 0., 0., 0.],
-                  [1., 0., -1., 1., 0., 0., 0.],
-			   [1., 0., -1., 1., 0., 0., 0.],
-		        [0., 0., 0., -1., -1., 0., 0.],
-			   [0., 0., 0., -1., 0., 1., 0.],
-			   [0., 0., 0., -2., 0., 0., 1.]])
+C,components = add_component(comps())
+
 
 # Function accepting parameters to give the modelled curves
 
@@ -20,10 +13,25 @@ def model_curves(p, time):
     from numpy import linspace, array, append, squeeze, zeros
     from scipy.integrate import odeint
     from model_parameters import unpack_parameters
-    
+
+    plot_vals = {}
+    for i in components:
+        plot_vals[i] = []
+
+    plot_vals['T'] = []
+    plot_vals['mu'] = []
+    plot_vals['Tm'] = []
+    plot_vals['Torq'] = []
+
     #unpack parameter values from parameter structure
     para = unpack_parameters(p)
-    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, UA, mu_0, E, q, prim_stab_0, LDH_0 = para
+    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q, prim_stab_0, LDH_0 = para
+    n = 5
+
+    # Reactions( can be edited and rest will take care of itself. just remember to adjust paramters, limits and initials in Adjust_parameters.py!!!)
+
+    kinetic_params = k3,k4,k5,k6,k7,k8,k12,k13,n
+    reactions = rxns(kinetic_params)
    
     # temperature curve parameters
     R = 8.314
@@ -36,57 +44,51 @@ def model_curves(p, time):
     T_0 = 125.
     Tm_0 = 200.
     
-    from rxn_rates import r1, r2, r3, r4, r5, r6
-    from visc_torque_eq import mu, torque
-    from temp_der import dTdt, dTmdt
+#    from rxn_rates import r1, r2, r3, r4, r5, r6
+    from Physics import mu, torque, dTdt,dTmdt
+
+
+
+# integrating differential equations
+    T = T_0
+    Tm = Tm_0
+    delta_t = time[1]-time[0]
+    for t in time:
+        for i in components:
+            plot_vals[i].append(C[i])
+        mu = mu(mu_0, E, R, T, k9,k10,k14,k15, C)
+        Torq = k1*mu
+
+        plot_vals['mu'].append(mu)
+        plot_vals['T'].append(T)
+        plot_vals['Torq'].append(Torq)
+        plot_vals['Tm'].append(Tm)
+
+        del_T = dTdt(T, mu_0, E, UA, k9, k10,k14,k15,k11,C)
+        del_Tm = dTmdt(T,Tm,k2)
+
+        delta = mol_bal(components, reactions, C)
+
+        for i in components:
+            C[i] += delta[i] * delta_t
+
+        T += del_T*delta_t
+        Tm += del_Tm*delta_t
+
+
     
-    # differential equations
-    def dXdt(A, time):
-        HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm = A
-        
-        r = array([r1(k3, HCl, LDH), 
-                   r2(k4, HCl, poly_act),
-				   r3(k5, poly_act),
-				   r4(k6, radical, prim_stab),
-				   r5(k7, radical), 
-				   r6(k8, radical)])
-        return append(squeeze(stoyk().T.dot(r)),
-                      [dTdt(T, mu_0, E, UA, k9, deg_poly, k10, x_link, q, k11),
-                       dTmdt(T, Tm, k2)]
-                      )
-
-    A_0 = array([HCl_0, LDH_0, poly_act_0, 0., prim_stab_0, 0., 0., T_0, Tm_0])
-    
-    soln = odeint(dXdt, A_0, time)
-
-    HCl = soln[:, 0]
-    LDH = soln[:, 1]
-    poly_act = soln[:, 2]
-    radical = soln[:, 3]
-    prim_stab = soln[:, 4]
-    deg_poly = soln[:, 5]
-    x_link = soln[:, 6]
-    T = soln[:, 7]
-    Tm = soln[:, 8]
-
-    mu_V = zeros(len(time))
-    torque_V = zeros(len(time))
-
-    for i in range(0,len(time)):
-        mu_V[i] = mu(mu_0, E, R, T[i], k9, deg_poly[i], k10, x_link[i], q)
-        torque_V[i] = torque(k1, mu_V[i])
-
-    return HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm, mu_V, torque_V
+    soln = plot_vals
+    return soln
 
 # Function only returning torque curve
 
 def torque_curve(p, time):
     curves = model_curves(p, time)
-    return curves[10]
+    return curves['Torq']
 	
 def temp_curve(p, time):
     curves = model_curves(p, time)
-    return curves[8]
+    return curves['T']
 
 def fcn2min_torque(p, time, data):
     model = torque_curve(p, time)
@@ -128,10 +130,10 @@ def joined_curves(torque, temp):
         T_stds.append(std(temp_data))    
     # In[5]:
     
-    meantorgue=mean(t_means)
-    meantemp=mean(T_means)
-    std_torgue=mean(t_stds)
-    std_temp=mean(T_stds)
+    meantorgue = mean(t_means)
+    meantemp = mean(T_means)
+    std_torgue = mean(t_stds)
+    std_temp = mean(T_stds)
     
     
     

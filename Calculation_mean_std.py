@@ -4,7 +4,7 @@
 # In[1]:
 
 from datahandling import DataFile, alldatafiles, cuts, trim
-get_ipython().magic(u'pylab inline')
+
 
 
 # In[2]:

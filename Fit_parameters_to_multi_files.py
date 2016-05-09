@@ -8,10 +8,11 @@
 from datahandling import DataFile, alldatafiles, cuts, trim, file_parse
 from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
-from curve_func_2 import torque_curve, fcn2min_torque, fcn2min, model_curves, joined_curves
+from Simulation import torque_curve, fcn2min_torque, fcn2min, model_curves, joined_curves
 from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
-get_ipython().magic(u'pylab inline')
+from numpy import append
+from Adjust_Kinetics import *
 
 
 # #### Loading all files
@@ -90,32 +91,32 @@ with PdfPages('all_curves_14.pdf') as pdf:
         
         #Plotting to pdf
         curves = model_curves(p_best, time_data)
-        HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm, mu, torque = curves
+   #     HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm, mu, torque = curves
         
         title = 'Run ' + str(i + 1) + ', LDH type: ' + LDH_type + ', initial LDH: ' + str(LDH_0)
         
         fig_torque = figure()
         fig_torque.suptitle(title)
-        plot(time_data, torque, label='fitted torque curve')
+        plot(time_data, curves['Torq'], label='fitted torque curve')
         plot(time_data, torque_data, label='torque data')
         legend()
         
         fig_temp = figure()
         fig_temp.suptitle(title)
-        plot(time_data, Tm, label='fitted temp curve')
+        plot(time_data, curves['Tm'], label='fitted temp curve')
         plot(time_data, temp_data, label='temp data')
         legend()
         xlim([0, time_data[len(time_data) - 1] + 14])
         
         fig_species = figure()
         fig_species.suptitle(title)
-        plot(time_data, HCl, '--', label='HCl')
+        plot(time_data, curves['HCl'], '--', label='HCl')
         #plot(time_data, LDH, label='LDH')
         #plot(time_data, poly_act, '-.', label='poly_act')
-        plot(time_data, radical, ':', label='radical')
-        plot(time_data, prim_stab, '--', label='prim_stab')
-        plot(time_data, deg_poly, label='deg_poly')
-        plot(time_data, x_link, label='x_link')
+        plot(time_data, curves['rad'], ':', label='radical')
+        plot(time_data, curves['ps'], '--', label='prim_stab')
+        plot(time_data, curves['dp'], label='deg_poly')
+        plot(time_data, ['xl'], label='x_link')
         legend()
         xlim([0, time_data[len(time_data) - 1] + 8])
         
@@ -137,24 +138,7 @@ para_V = parameter_vectors(all_ps)
 
 # In[5]:
 
-figure_headings = ['k1, visc-torque',
-                   'k2, Tm-T',
-                   'k3, LDH rxn',
-                   'k4, auto-catalytic HCl production rxn',
-                   'k5, initiation rxn for HCl production',
-                   'k6, primary stabiliser rxn',
-                   'k7, radical to degraded polymer',
-                   'k8, radical to cross-link',
-                   'k9, degraded polymer effect on visc',
-                   'k10, cross-linking effect on visc',
-                   'k11, mechanical work affecting temp',
-                   'UA',
-                   'mu_0',
-                   'E',
-                   'q',
-                   'prim_stab_0',
-                   'LDH_0']
-
+figure_headings = figure_heads()
 
 # In[6]:
 
