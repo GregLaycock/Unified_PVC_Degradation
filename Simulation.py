@@ -48,8 +48,17 @@ def model_curves(p, time):
     from Physics import mu, torque, dTdt,dTmdt
 
 
+# define ode function
+    import numpy
+    names = numpy.zeros(len(C))
+    values = numpy.zeros_like(names)
+    for i,name in enumerate(C):
+        names[i] = name
+        values[i] = C[name]
+    def odesys(var):
 
-# integrating differential equations
+
+# integrate differential equations
     T = T_0
     Tm = Tm_0
     delta_t = time[1]-time[0]
