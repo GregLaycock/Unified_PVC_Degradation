@@ -51,53 +51,51 @@ def params(ini_values):
                (      'LDH_0',       LDH_0,  False,   None,   None))
 
 
-def limits():
-    lims = [[1.6, 2.1],
-            [8.0, 46.0],
-            [0.0, 6.0],
-            [0.0, 2.1],
-            [0.0, 0.03],
-            [0.0, 39.0],
-            [0.0, 2.7],
-            [0.0, 7.9],
-            [0.0, 13.1],
-            [0.7, 10.9],
-            [2.0, 3.6],
-            [0.,  100.],
-            [0.,  100.],
-            [0.,  100.],
-            [0.,  100.]
-            [275.0, 402.0]]
-    return lims
+
+limitss = [[1.6, 2.1],
+           [8.0, 46.0],
+           [0.0, 6.0],
+           [0.0, 2.1],
+           [0.0, 0.03],
+           [0.0, 39.0],
+           [0.0, 2.7],
+           [0.0, 7.9],
+           [0.0, 13.1],
+           [0.7, 10.9],
+           [2.0, 3.6],
+           [0.,  100.],
+           [0.,  100.],
+           [0.,  100.],
+           [0.,  100.],
+           [275.0, 402.0]]
 
 
 
-def figure_heads():
-    lis =  ['k1, visc-torque',
-            'k2, Tm-T',
-            'k3, LDH rxn',
-            'k4, auto-catalytic HCl production rxn',
-            'k5, initiation rxn for HCl production',
-            'k6, primary stabiliser rxn',
-            'k7, radical to degraded polymer',
-            'k8, radical to cross-link',
-            'k9, degraded polymer effect on visc',
-            'k10, cross-linking effect on visc',
-            'k11, mechanical work affecting temp',
-            'k12',
-            'k13',
-            'k14',
-            'k15'
-            'UA',
-            'mu_0',
-            'E',
-            'q',
-            'prim_stab_0',
-            'LDH_0']
-    return lis
+
+
+figure_heads = ['k1, visc-torque',
+                'k2, Tm-T',
+                'k3, LDH rxn',
+                'k4, auto-catalytic HCl production rxn',
+                'k5, initiation rxn for HCl production',
+                'k6, primary stabiliser rxn',
+                'k7, radical to degraded polymer',
+                'k8, radical to cross-link',
+                'k9, degraded polymer effect on visc',
+                'k10, cross-linking effect on visc',
+                'k11, mechanical work affecting temp',
+                'k12',
+                'k13',
+                'k14',
+                'k15'
+                'UA',
+                'mu_0',
+                'E',
+                'q',
+                'prim_stab_0',
+                'LDH_0']
 
 
 
-def comps():
-    return components
+
 

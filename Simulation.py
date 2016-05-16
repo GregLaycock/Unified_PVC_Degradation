@@ -2,9 +2,10 @@
 from datahandling import DataFile, alldatafiles, cuts, trim
 from numpy import mean,std
 from Adjust_Kinetics import *
+import Adjust_Kinetics
 from PVC_deg_kinetics import *
 
-C,components = add_component(comps())
+C,components = add_component(Adjust_Kinetics.components)
 
 
 # Function accepting parameters to give the modelled curves
@@ -15,13 +16,15 @@ def model_curves(p, time):
     from model_parameters import unpack_parameters
 
     plot_vals = {}
-    for i in components:
-        plot_vals[i] = []
 
-    plot_vals['T'] = []
-    plot_vals['mu'] = []
-    plot_vals['Tm'] = []
-    plot_vals['Torq'] = []
+# DELETE IN FINAL BUILD
+#    for i in components:
+#        plot_vals[i] = []
+#
+#    plot_vals['T'] = []
+#    plot_vals['mu'] = []
+#    plot_vals['Tm'] = []
+#    plot_vals['Torq'] = []
 
     #unpack parameter values from parameter structure
     para = unpack_parameters(p)
@@ -50,44 +53,80 @@ def model_curves(p, time):
 
 # define ode function
     import numpy
-    names = numpy.zeros(len(C))
-    values = numpy.zeros_like(names)
+    names = []
+    initials = numpy.zeros(len(C))
     for i,name in enumerate(C):
-        names[i] = name
-        values[i] = C[name]
-    def odesys(var):
+        names.append(name)
+        initials[i] = C[name]
+    initials = list(initials)
+    initials.append(T_0)
+    initials.append(Tm_0)
 
-
-# integrate differential equations
-    T = T_0
-    Tm = Tm_0
-    delta_t = time[1]-time[0]
-    for t in time:
-        for i in components:
-            plot_vals[i].append(C[i])
-        mu = mu(mu_0, E, R, T, k9,k10,k14,k15, C)
-        Torq = k1*mu
-
-        plot_vals['mu'].append(mu)
-        plot_vals['T'].append(T)
-        plot_vals['Torq'].append(Torq)
-        plot_vals['Tm'].append(Tm)
-
-        del_T = dTdt(T, mu_0, E, UA, k9, k10,k14,k15,k11,C)
+    def odesys(var,time):
+        C = {}
+        for i,name in enumerate(names):
+            C[name] = var[i]
+        Nc = len(names)
+        T = var[Nc]
+        Tm = var[Nc+1]
+        del_T = dTdt(T, mu_0, E, UA, k9, k10, k14, k15, k11, C)
         del_Tm = dTmdt(T,Tm,k2)
-
         delta = mol_bal(components, reactions, C)
+        del_comps = numpy.zeros(len(names))
 
-        for i in components:
-            C[i] += delta[i] * delta_t
+        for i, name in enumerate(names):
+            del_comps[i] = delta[name]
 
-        T += del_T*delta_t
-        Tm += del_Tm*delta_t
+        to_return = list(del_comps)
+        to_return.append(del_T)
+        to_return.append(del_Tm)
+        return to_return
+#   integrate differential equations
+    solved = odeint(odesys(),initials,time)
+    sol2 = solved.T
+    C_vals = {}
+    for i,name in enumerate(names):
+        C_vals[name] = sol2[i]
+    T_index = len(sol2) - 2
+    plot_vals.update(C_vals)
+    plot_vals['T'] = sol2[T_index]
+    plot_vals['Tm'] = sol2[T_index + 1]
+    import Physics
+    plot_vals['mu'] = Physics.mu_plot(mu_0, E, R, plot_vals['T'], k9, k10, k14, k15, C_vals)
+    plot_vals['Torq'] = Physics.Torq_plot(plot_vals['mu'],k1)
+
+    return plot_vals
+
+#   DELETE IN FINAL BUILD
+#    T = T_0
+#    Tm = Tm_0
+#    delta_t = time[1]-time[0]
+#    for t in time:
+#        for i in components:
+#            plot_vals[i].append(C[i])
+#        mu = mu(mu_0, E, R, T, k9,k10,k14,k15, C)
+#        Torq = k1*mu
+#
+#       plot_vals['mu'].append(mu)
+#        plot_vals['T'].append(T)
+#        plot_vals['Torq'].append(Torq)
+#        plot_vals['Tm'].append(Tm)
+
+#        del_T = dTdt(T, mu_0, E, UA, k9, k10,k14,k15,k11,C)
+#        del_Tm = dTmdt(T,Tm,k2)
+
+#        delta = mol_bal(components, reactions, C)
+
+#        for i in components:
+#            C[i] += delta[i] * delta_t
+#
+#        T += del_T*delta_t
+#        Tm += del_Tm*delta_t
 
 
     
-    soln = plot_vals
-    return soln
+#    soln = plot_vals
+#    return soln
 
 # Function only returning torque curve
 

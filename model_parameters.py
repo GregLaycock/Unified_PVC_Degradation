@@ -34,14 +34,14 @@ def ms_var_func(val, factor):
 def rand_ini_val(LDH_0):
     from numpy import append
     from random import random
-    from Adjust_Kinetics import limits
+    import Adjust_Kinetics
 
-    lims = limits()
+    lims = Adjust_Kinetics.limits
     
     ini_val = []
     for l in range(len(lims)):
-        lb = limits[l][0]
-        ub = limits[l][1]
+        lb = lims[l][0]
+        ub = lims[l][1]
         new_val = lb + random()*(ub - lb)
         ini_val.append(new_val)
     

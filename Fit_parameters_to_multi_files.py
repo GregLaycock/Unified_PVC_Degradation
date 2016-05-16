@@ -137,8 +137,8 @@ para_V = parameter_vectors(all_ps)
 
 
 # In[5]:
-
-figure_headings = figure_heads()
+import Adjust_Kinetics
+figure_headings = Adjust_Kinetics.figure_heads
 
 # In[6]:
 
