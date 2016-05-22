@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5f6638f-a33a-4745-8049-3344251a1d24" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/Unified_PVC_Degradation.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Backup old/Testing.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Backup old/kinetics_eq.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Backup old/rxn_rates.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Backup old/temp_der.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Spooky_error_message.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/all_curves_1.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/config.json" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Adjust_Kinetics.py" afterPath="$PROJECT_DIR$/Adjust_Kinetics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Fit_parameters_to_multi_files.py" afterPath="$PROJECT_DIR$/Fit_parameters_to_multi_files.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Simulation.py" afterPath="$PROJECT_DIR$/Simulation.py" />
-    </list>
+    <list default="true" id="c5f6638f-a33a-4745-8049-3344251a1d24" name="Default" comment="" />
     <ignored path="Unified_PVC_Degradation.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -466,7 +448,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24947916" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
