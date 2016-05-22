@@ -34,7 +34,7 @@ all_LDH_type = []
 all_errors = []
 all_int_errors = []
 
-with PdfPages('all_curves_14.pdf') as pdf:
+with PdfPages('all_curves_1.pdf') as pdf:
     for i, f in enumerate(files):
         time_data, temp_data, torque_data = DataFile(f).simple_data()
         
@@ -48,7 +48,7 @@ with PdfPages('all_curves_14.pdf') as pdf:
         joined_data = joined_curves(torque_data, temp_data)
         
         # Parsing filenames
-        LDH_0, LDH_type = file_parse(f)
+        LDH_0, LDH_type = 1.3,'mystery' #file_parse(f)
         all_LDH_type = append(all_LDH_type, LDH_type)
         
         # Multistart

@@ -21,7 +21,7 @@ def dTmdt(T, Tm, k2):
 def mu_plot(mu_0, E, R, T_vals, k9,k10,k14,k15, C_vals):
     from math import exp
     mu_vals = []
-    for i,T in T_vals:
+    for i,T in enumerate(T_vals):
         mu_val = mu_0*exp(-E/(R*T)) +k9*C_vals['dp'][i] + k10*C_vals['xl'][i]**(q) - k14*C_vals['half'][i] + k15 * C_vals['double'][i]
         mu_vals.append(mu_val)
     return mu_vals

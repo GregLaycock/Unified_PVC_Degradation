@@ -9,7 +9,7 @@ with open('config.json') as f:
 datadir = os.path.expanduser(config['datadir'])
 
 def alldatafiles():
-    return glob.glob(os.path.join(datadir, '**/*.txt'))
+    return glob.glob(os.path.join(datadir, '*.txt'))
 
 
 class DataFile:
@@ -19,14 +19,14 @@ class DataFile:
         self.directory, self.filename = os.path.split(filename)
         # Load with pandas
         self.data = pandas.read_table(filename,
-                                      skiprows = 4,
+                                      skiprows = 3,
                                       sep = ';',
                                       usecols = range(6))
 
     def simple_data(self):
-        time = self.data['t [min]'].values
-        temp = self.data[self.data.columns[4]].values
-        torque = self.data['M [Nm]'].values
+        time =   self.data['t [min]'].values
+        temp =   self.data[self.data.columns[4]].values
+        torque = self.data[self.data.columns[3]].values  #['Torque [Nm]'].values
 
         return time, temp, torque
 

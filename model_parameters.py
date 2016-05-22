@@ -3,7 +3,9 @@ def parameters(ini_values):
     from lmfit import Parameters
     from Adjust_Kinetics import params
     p = Parameters()
-    p.add_many(params(ini_values))
+    pi = params(ini_values)
+    for i,tup in enumerate(pi):
+        p.add_many(tup)
     return p
 	
 def unpack_parameters(p):
@@ -14,7 +16,6 @@ def unpack_parameters(p):
     return lis
 
 def parameter_vectors(all_ps):
-    from numpy import append
     all = []
     for i, lis in enumerate(all_ps[0]):
         all.append([])

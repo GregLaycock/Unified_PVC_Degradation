@@ -82,7 +82,7 @@ def model_curves(p, time):
         to_return.append(del_Tm)
         return to_return
 #   integrate differential equations
-    solved = odeint(odesys(),initials,time)
+    solved = odeint(odesys, initials, time)
     sol2 = solved.T
     C_vals = {}
     for i,name in enumerate(names):
