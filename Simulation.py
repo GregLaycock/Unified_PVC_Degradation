@@ -5,7 +5,7 @@ from Adjust_Kinetics import *
 import Adjust_Kinetics
 from PVC_deg_kinetics import *
 
-C,components = add_component(Adjust_Kinetics.components)
+
 
 
 # Function accepting parameters to give the modelled curves
@@ -16,7 +16,7 @@ def model_curves(p, time):
     from model_parameters import unpack_parameters
 
     plot_vals = {}
-
+    C,components = add_component(Adjust_Kinetics.components)
 # DELETE IN FINAL BUILD
 #    for i in components:
 #        plot_vals[i] = []

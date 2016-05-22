@@ -34,7 +34,7 @@ all_LDH_type = []
 all_errors = []
 all_int_errors = []
 
-with PdfPages('all_curves_1.pdf') as pdf:
+with PdfPages('all_curves_2.pdf') as pdf:
     for i, f in enumerate(files):
         time_data, temp_data, torque_data = DataFile(f).simple_data()
         
@@ -56,6 +56,7 @@ with PdfPages('all_curves_1.pdf') as pdf:
         smallest_error = 100000.0
         
         for j in range(starts):
+
             # Initialising values
             ini_val = rand_ini_val(LDH_0)
             
@@ -110,13 +111,15 @@ with PdfPages('all_curves_1.pdf') as pdf:
         
         fig_species = figure()
         fig_species.suptitle(title)
-        plot(time_data, curves['HCl'], '--', label='HCl')
+        plot(time_data, curves['HCL'], '--', label='HCl')
         #plot(time_data, LDH, label='LDH')
         #plot(time_data, poly_act, '-.', label='poly_act')
         plot(time_data, curves['rad'], ':', label='radical')
         plot(time_data, curves['ps'], '--', label='prim_stab')
         plot(time_data, curves['dp'], label='deg_poly')
-        plot(time_data, ['xl'], label='x_link')
+        plot(time_data, curves['xl'], label='x_link')
+        plot(time_data, curves['double'], label='long_chains')
+        plot(time_data, curves['half'], label='short_chains')
         legend()
         xlim([0, time_data[len(time_data) - 1] + 8])
         
