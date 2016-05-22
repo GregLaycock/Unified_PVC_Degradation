@@ -45,7 +45,7 @@ def params(ini_values):
                 (      'k15',           k15,  True,    10.,     20),
                 (         'UA',          UA,  True,    275.0,  402.0),
                 (       'mu_0',        mu_0,  False,   0.0,    0.1),
-                (          'E',           E,  False,   5000.0, None),
+                (          'E',           E,  False,   5000.0, 7000),
                 (          'q',           q,  False,   0.0,    17.0),
                 ('prim_stab_0', prim_stab_0,  False,   0.5,    1.3),
                 (      'LDH_0',       LDH_0,  False,   None,   None)]
