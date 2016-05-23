@@ -97,38 +97,7 @@ def model_curves(p, time):
 
     return plot_vals
 
-#   DELETE IN FINAL BUILD
-#    T = T_0
-#    Tm = Tm_0
-#    delta_t = time[1]-time[0]
-#    for t in time:
-#        for i in components:
-#            plot_vals[i].append(C[i])
-#        mu = mu(mu_0, E, R, T, k9,k10,k14,k15, C)
-#        Torq = k1*mu
-#
-#       plot_vals['mu'].append(mu)
-#        plot_vals['T'].append(T)
-#        plot_vals['Torq'].append(Torq)
-#        plot_vals['Tm'].append(Tm)
 
-#        del_T = dTdt(T, mu_0, E, UA, k9, k10,k14,k15,k11,C)
-#        del_Tm = dTmdt(T,Tm,k2)
-
-#        delta = mol_bal(components, reactions, C)
-
-#        for i in components:
-#            C[i] += delta[i] * delta_t
-#
-#        T += del_T*delta_t
-#        Tm += del_Tm*delta_t
-
-
-    
-#    soln = plot_vals
-#    return soln
-
-# Function only returning torque curve
 
 def torque_curve(p, time):
     curves = model_curves(p, time)
@@ -147,7 +116,9 @@ def fcn2min_temp(p, time, data):
     return model - data
 
 def fcn2min(p, time, data):
-    model = joined_curves(torque_curve(p, time), temp_curve(p, time))
+    torc = model_curves['Torq']
+    tempc = mode_curves['T']
+    model = joined_curves(torc, tempc)
     return model - data
 	
 def joined_curves(torque, temp):
