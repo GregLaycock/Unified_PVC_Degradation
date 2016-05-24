@@ -98,6 +98,7 @@ def model_curves(p, time):
     return plot_vals
 
 
+# defining optimization and plotting functions
 
 def torque_curve(p, time):
     curves = model_curves(p, time)
@@ -116,9 +117,10 @@ def fcn2min_temp(p, time, data):
     return model - data
 
 def fcn2min(p, time, data):
-    torc = model_curves['Torq']
-    tempc = mode_curves['T']
-    model = joined_curves(torc, tempc)
+    curves = model_curves(p, time)
+    torc = curves['Torq']
+    tempc = curves['T']
+    model = joined_curves(torc,tempc)
     return model - data
 	
 def joined_curves(torque, temp):

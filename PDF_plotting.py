@@ -52,7 +52,7 @@ with PdfPages('all_curves_2.pdf') as pdf:
         all_LDH_type = append(all_LDH_type, LDH_type)
         
         # Multistart
-        starts = 10
+        starts = 2
         smallest_error = 100000.0
         
         for j in range(starts):
