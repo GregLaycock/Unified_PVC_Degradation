@@ -6,7 +6,7 @@ from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
 from Adjust_Kinetics import *
-
+from Simulation import *
 # #### Loading all files
 
 # In[6]:
@@ -14,6 +14,24 @@ from Adjust_Kinetics import *
 files = alldatafiles()
 no_files = len(files)
 
+#setting up
+LDH_inits = LDH_zeros()   # this will require that the files be renamed, will test with a list later [1.3,1.3,1.3 .....]
+
+
+def get_timesets():
+    time_sets = []
+    for i, f in files:
+        time_data, temp_data, torque_data = DataFile(f).simple_data()
+
+        # Trimming data
+        c = cuts(torque_data)
+        time_data = trim(time_data, c)
+        #Joining data
+        time_sets.append(time_data)
+    return time_sets
+
+time_sets = get_timesets()
+Joined_data = joined_data()
 
 # #### Looping over files
 # Saving pdf of all torque, temp and species curves

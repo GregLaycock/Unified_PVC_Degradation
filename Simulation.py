@@ -10,25 +10,18 @@ from PVC_deg_kinetics import *
 
 # Function accepting parameters to give the modelled curves
 
-def model_curves(p, time):
+def model_curves(p, time,LDH_0):                                   # remove LDH_0 as a dynamic parameter
     from numpy import linspace, array, append, squeeze, zeros
     from scipy.integrate import odeint
     from model_parameters import unpack_parameters
 
     plot_vals = {}
     C,components = add_component(Adjust_Kinetics.components)
-# DELETE IN FINAL BUILD
-#    for i in components:
-#        plot_vals[i] = []
-#
-#    plot_vals['T'] = []
-#    plot_vals['mu'] = []
-#    plot_vals['Tm'] = []
-#    plot_vals['Torq'] = []
 
     #unpack parameter values from parameter structure
     para = unpack_parameters(p)
-    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q, prim_stab_0, LDH_0 = para
+    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q, prim_stab_0 = para
+
     n = 5
 
     # Reactions( can be edited and rest will take care of itself. just remember to adjust paramters, limits and initials in Adjust_parameters.py!!!)
@@ -122,48 +115,27 @@ def fcn2min(p, time, data):
     tempc = curves['T']
     model = joined_curves(torc,tempc)
     return model - data
-	
-def joined_curves(torque, temp):
+
+
+def num_range_equal(list, m, s):
+    nre_list = []
+    for i in list:
+        nre_val = (i - m)/s
+        nre_list.append(nre_val)
+
+    return nre_list
+
+def norm_and_join(torque, temp):
+
     from numpy import append
     t_list = list(torque)
     T_list = list(temp)
-      
-    # In[2]:
-    
-    files = alldatafiles()
-    
-    t_means = []
-    T_means = []
-    t_stds = []
-    T_stds = []
-    
-    for f in files:
-        time_data, temp_data, torque_data = DataFile(f).simple_data()
-        
-        c = cuts(torque_data)
-        time_data = trim(time_data, c)
-        temp_data = trim(temp_data, c)
-        torque_data = trim(torque_data, c)
-        
-        t_means.append(mean(torque_data))
-        T_means.append(mean(temp_data))
-        t_stds.append(std(torque_data))
-        T_stds.append(std(temp_data))    
-    # In[5]:
-    
-    meantorgue = mean(t_means)
-    meantemp = mean(T_means)
-    std_torgue = mean(t_stds)
-    std_temp = mean(T_stds)
-    
-    
-    
-    
-    
-    
-    
-    
-	# Manually insert torque and temp mean and std respectively
+
+    meantorgue = mean(t_list)
+    meantemp = mean(T_list)
+    std_torgue = std(t_list)
+    std_temp = std(T_list)
+
     t_norm = num_range_equal(t_list, meantorgue, std_torgue)
     T_norm = num_range_equal(T_list, meantemp, std_temp)
     
@@ -175,4 +147,38 @@ def num_range_equal(list, m, s):
         nre_val = (i - m)/s
         nre_list.append(nre_val)
 
-    return nre_list		
+    return nre_list
+
+def LDH_zeros():
+    LDH_inits = []
+    from datahandling import file_parse
+    files = alldatafiles()
+    for i,f in enumerate(files):
+        LDH_0, LDH_type = file_parse(f)
+        LDH_inits.append(LDH_0)
+    return LDH_inits
+
+def joined_sim(p,LDH_inits,time_sets):                          # p = parameters with ldh_0 removed which should still be done.
+    from numpy import append
+    for i,ldh_0 in LDH_inits:        # 1 initial ldh per data file
+        time = time_sets[i]
+        sim_res = model_curves(p,time,ldh_0)
+        torc = sim_res['Torq']
+        tempc = sim_res['T']
+        joined = norm_and_join(torc,tempc)
+
+    return append(joined)
+
+def joined_data():
+    from numpy import append
+    files = alldatafiles()
+    for i, f in files:
+        time_data, temp_data, torque_data = DataFile(f).simple_data()
+
+        # Trimming data
+        c = cuts(torque_data)
+        time_data = trim(time_data, c)
+        temp_data = trim(temp_data, c)
+        torque_data = trim(torque_data, c)
+        #Joining data
+        return append(norm_and_join(torque_data, temp_data))
