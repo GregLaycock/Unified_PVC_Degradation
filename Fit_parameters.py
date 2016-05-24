@@ -48,7 +48,7 @@ smallest_error = 100000.0
 
 for j in range(starts):
 
-    print('currently on start', j + 1)
+    print 'currently on start', j + 1
     # Initialising values
     ini_val = rand_ini_val()
 
@@ -73,15 +73,16 @@ for j in range(starts):
     print 'completed start', j + 1
 
 #Storing parameter and error values
-fitted_parameters = p_best   #all_ps.append(p_best)   obsolete
+   #all_ps.append(p_best)   obsolete
 #all_errors.append(smallest_error)         obsoleted as these were per fit but we no longer fit data files separately
 #all_int_errors.append(smallest_int_error)
 
-print('Completed Fit ')
+print 'Completed Fit '
 print('__________________________')
 
 elapsed = tm() - t
 print('*******************')
-print('elapsed time (min) =', elapsed/60.)
+print 'elapsed time (min) =', elapsed/60.
 
 
+fitted_parameters = p_best
