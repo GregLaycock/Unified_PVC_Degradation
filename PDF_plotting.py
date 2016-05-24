@@ -8,7 +8,6 @@
 from datahandling import DataFile, alldatafiles, cuts, trim, file_parse
 from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
-from Simulation import torque_curve, fcn2min_torque, fcn2min, model_curves, joined_curves
 from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz

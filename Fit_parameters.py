@@ -70,7 +70,7 @@ for j in range(starts):
         p_best = p
         smallest_int_error = int_abs_error
 
-    print('completed start', j + 1)
+    print 'completed start', j + 1
 
 #Storing parameter and error values
 fitted_parameters = p_best   #all_ps.append(p_best)   obsolete
