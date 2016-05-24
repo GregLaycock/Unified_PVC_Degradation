@@ -32,7 +32,7 @@ def ms_var_func(val, factor):
     from random import random
     return val + random()*val*factor - val*factor/2.0
 
-def rand_ini_val(LDH_0):
+def rand_ini_val():
     from numpy import append
     from random import random
     import Adjust_Kinetics
@@ -46,4 +46,4 @@ def rand_ini_val(LDH_0):
         new_val = lb + random()*(ub - lb)
         ini_val.append(new_val)
     
-    return append(ini_val, [0.0372, 6208.6, 2.5, 1.3, LDH_0])    
+    return append(ini_val, [0.0372, 6208.6, 2.5, 1.3])

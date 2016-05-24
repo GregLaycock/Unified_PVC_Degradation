@@ -13,7 +13,7 @@ from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
 from Adjust_Kinetics import *
-
+from Fit_parameters import fitted_parameters, LDH_inits,all_LDH_type,time_sets
 
 # #### Loading all files
 
@@ -34,7 +34,7 @@ all_LDH_type = []
 all_errors = []
 all_int_errors = []
 
-with PdfPages('all_curves_2.pdf') as pdf:
+with PdfPages('all_curves_1.pdf') as pdf:
     for i, f in enumerate(files):
         time_data, temp_data, torque_data = DataFile(f).simple_data()
         
@@ -43,58 +43,13 @@ with PdfPages('all_curves_2.pdf') as pdf:
         time_data = trim(time_data, c)
         temp_data = trim(temp_data, c)
         torque_data = trim(torque_data, c)
-        
-        #Joining data
-        joined_data = joined_curves(torque_data, temp_data)
-        
-        # Parsing filenames
-        LDH_0, LDH_type = 1.3,'mystery' #file_parse(f)
-        all_LDH_type = append(all_LDH_type, LDH_type)
-        
-        # Multistart
-        starts = 2
-        smallest_error = 100000.0
-        
-        for j in range(starts):
 
-            # Initialising values
-            ini_val = rand_ini_val(LDH_0)
-            
-            # Initialising and limiting parameters
-            p = parameters(ini_val)
-            
-            # Fitting data
-            result = minimize(fcn2min, p, args=(time_data, joined_data))
-            
-            # Calculating average and integral of absolute error
-            error_list = fcn2min(p, time_data, joined_data)
-            abs_error_list = map(abs, error_list)
-            ave_abs_error = sum(abs_error_list)/len(error_list)
-            torque_error_list = fcn2min_torque(p, time_data, torque_data)
-            abs_torque_error_list = map(abs, torque_error_list)
-            int_abs_error = trapz(abs_torque_error_list, dx=0.017)
-            
-            # Check error and save parameters
-            smallest_error = min([smallest_error, ave_abs_error])
-            if smallest_error == ave_abs_error:
-                p_best = p
-                smallest_int_error = int_abs_error
-            
-            print(j + 1)
-            
-        #Storing parameter and error values
-        all_ps.append(p_best)
-        all_errors.append(smallest_error)
-        all_int_errors.append(smallest_int_error)
-        
-        print('Completed Fit ',(i + 1))
-        print('__________________________')
-        
         #Plotting to pdf
-        curves = model_curves(p_best, time_data)
+
+        curves = model_curves(fitted_parameters, time_data,LDH_inits[i])
    #     HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm, mu, torque = curves
         
-        title = 'Run ' + str(i + 1) + ', LDH type: ' + LDH_type + ', initial LDH: ' + str(LDH_0)
+        title = 'Run ' + str(i + 1) + ', LDH type: ' + all_LDH_type[i] + ', initial LDH: ' + str(LDH_inits[i])
         from matplotlib.pyplot import *
         fig_torque = figure()
         fig_torque.suptitle(title)
@@ -136,7 +91,7 @@ print('elapsed time (min) =', elapsed/60.)
 
 # In[4]:
 
-para_V = parameter_vectors(all_ps)
+para_V = parameter_vectors(fitted_parameters)
 
 
 # In[5]:
@@ -145,9 +100,9 @@ figure_headings = Adjust_Kinetics.figure_heads
 
 # In[6]:
 
-for h, ps in zip(figure_headings, para_V):
-    figure().suptitle(h)
-    plot(ps, '.')
+#for h, ps in zip(figure_headings, para_V):
+ #   figure().suptitle(h)
+  #  plot(ps, '.')
 
 
 # ####Placing parameters into DataFrame
@@ -188,16 +143,16 @@ lower_bounds
 
 # In[12]:
 
-para_frame['LDH type'] = all_LDH_type
-para_frame['Average of Absolute Error'] = all_errors
-para_frame['Integral of the Absolute Error'] = all_int_errors
+para_frame['parameters and errors from fitting for joined curve representing all data'] = 0
+para_frame['Average of Absolute Error'] = Fit_parameters.ave_abs_error
+para_frame['Integral of the Absolute Error'] = Fit_parameters.int_abs_error
 
 
 # Writing DataFrame to csv
 
 # In[13]:
 
-para_frame.to_csv('all_parameters_14.csv')
+para_frame.to_csv('all_parameters_1.csv')
 
 
 # In[ ]:
