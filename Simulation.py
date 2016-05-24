@@ -160,19 +160,20 @@ def LDH_zeros():
 
 def joined_sim(p,LDH_inits,time_sets):                          # p = parameters with ldh_0 removed which should still be done.
     from numpy import append
-    for i,ldh_0 in LDH_inits:        # 1 initial ldh per data file
+    joined = []
+    for i,ldh_0 in enumerate(LDH_inits):        # 1 initial ldh per data file
         time = time_sets[i]
         sim_res = model_curves(p,time,ldh_0)
         torc = sim_res['Torq']
         tempc = sim_res['T']
-        joined = norm_and_join(torc,tempc)
-
-    return append(joined)
+        joined_i = norm_and_join(torc,tempc)
+        return append(joined,joined_i)
 
 def joined_data():
     from numpy import append
     files = alldatafiles()
-    for i, f in files:
+    joined = []
+    for i, f in enumerate(files):
         time_data, temp_data, torque_data = DataFile(f).simple_data()
 
         # Trimming data
@@ -180,10 +181,23 @@ def joined_data():
         temp_data = trim(temp_data, c)
         torque_data = trim(torque_data, c)
         #Joining data
-        return append(norm_and_join(torque_data, temp_data))
+        joined_i = norm_and_join(torque_data, temp_data)
+        return append(joined, joined_i)
 
 
 def fcn3min(p,time_sets,LDH_inits,Joined_data):
     model = joined_sim(p,LDH_inits,time_sets)
     data = Joined_data
     return model - data
+
+def get_timesets(files):
+    time_sets = []
+    for i, f in enumerate(files):
+        time_data, temp_data, torque_data = DataFile(f).simple_data()
+
+        # Trimming data
+        c = cuts(torque_data)
+        time_data = trim(time_data, c)
+        #Joining data
+        time_sets.append(time_data)
+    return time_sets

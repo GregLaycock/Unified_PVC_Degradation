@@ -1,7 +1,6 @@
 from datahandling import DataFile, alldatafiles, cuts, trim, file_parse
 from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
-from Simulation import torque_curve, fcn2min_torque, fcn2min, model_curves, joined_curves
 from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
@@ -15,34 +14,32 @@ files = alldatafiles()
 no_files = len(files)
 
 #setting up
+time_sets = get_timesets(files)
 t = tm()
 all_ps = []
 all_LDH_type = []
 all_errors = []
 all_int_errors = []
 
-# getting LDH info
-for i, f in enumerate(files):
+# getting LDH info - this will be implemented later
+
+#for i, f in enumerate(files):
     # Parsing filenames
-    LDH_0, LDH_type = file_parse(f)
-    all_LDH_type = append(all_LDH_type, LDH_type)
+#    LDH_0, LDH_type = file_parse(f)
+#    all_LDH_type = append(all_LDH_type, LDH_type)
 
-LDH_inits = LDH_zeros()   # this will require that the files be renamed, will test with a list later [1.3,1.3,1.3 .....]
-all_LDH_type = append(all_LDH_type, LDH_type)
+# this is a temporary solution for LDH types and zero values
+LDH_inits = []
+all_LDH_type = []
+for i,lis in enumerate(time_sets):
+    LDH_inits.append(1.3)
+    all_LDH_type.append('mystery_LDH')
 
-def get_timesets():
-    time_sets = []
-    for i, f in files:
-        time_data, temp_data, torque_data = DataFile(f).simple_data()
+#this should be implemented later once the files have been renamed
+#LDH_inits = LDH_zeros()   # this will require that the files be renamed, will test with a list later [1.3,1.3,1.3 .....]
+#all_LDH_type = append(all_LDH_type, LDH_type)
 
-        # Trimming data
-        c = cuts(torque_data)
-        time_data = trim(time_data, c)
-        #Joining data
-        time_sets.append(time_data)
-    return time_sets
-
-time_sets = get_timesets()
+# joining data curves( note Joined_data has a capital J and is not a function)
 Joined_data = joined_data()
 
 # Multistart
