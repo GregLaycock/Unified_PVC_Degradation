@@ -15,8 +15,20 @@ files = alldatafiles()
 no_files = len(files)
 
 #setting up
-LDH_inits = LDH_zeros()   # this will require that the files be renamed, will test with a list later [1.3,1.3,1.3 .....]
+t = tm()
+all_ps = []
+all_LDH_type = []
+all_errors = []
+all_int_errors = []
 
+# getting LDH info
+for i, f in enumerate(files):
+    # Parsing filenames
+    LDH_0, LDH_type = file_parse(f)
+    all_LDH_type = append(all_LDH_type, LDH_type)
+
+LDH_inits = LDH_zeros()   # this will require that the files be renamed, will test with a list later [1.3,1.3,1.3 .....]
+all_LDH_type = append(all_LDH_type, LDH_type)
 
 def get_timesets():
     time_sets = []
@@ -33,74 +45,46 @@ def get_timesets():
 time_sets = get_timesets()
 Joined_data = joined_data()
 
-# #### Looping over files
-# Saving pdf of all torque, temp and species curves
+# Multistart
+starts = 2
+smallest_error = 100000.0
 
-# In[7]:
+for j in range(starts):
 
-t = tm()
-all_ps = []
-all_LDH_type = []
-all_errors = []
-all_int_errors = []
+    print('currently on start', j + 1)
+    # Initialising values
+    ini_val = rand_ini_val()
 
+    # Initialising and limiting parameters
+    p = parameters(ini_val)
 
-for i, f in enumerate(files):
-    time_data, temp_data, torque_data = DataFile(f).simple_data()
+    # Fitting data
+    result = minimize(fcn3min, p, args=(time_sets,LDH_inits,Joined_data))
 
-    # Trimming data
-    c = cuts(torque_data)
-    time_data = trim(time_data, c)
-    temp_data = trim(temp_data, c)
-    torque_data = trim(torque_data, c)
+    # Calculating average and integral of absolute error
+    error_list = fcn3min(p, time_sets,LDH_inits, Joined_data)
+    abs_error_list = map(abs, error_list)
+    ave_abs_error = sum(abs_error_list)/len(error_list)
+    int_abs_error = trapz(abs_error_list, dx=0.017)
 
-    #Joining data
-    joined_data = joined_curves(torque_data, temp_data,f)
+    # Check error and save parameters
+    smallest_error = min([smallest_error, ave_abs_error])
+    if smallest_error == ave_abs_error:
+        p_best = p
+        smallest_int_error = int_abs_error
 
-    # Parsing filenames
-    LDH_0, LDH_type = 1.3,'mystery' #file_parse(f)
+    print('completed start', j + 1)
 
-    all_LDH_type = append(all_LDH_type, LDH_type)
+#Storing parameter and error values
+all_ps = p_best   #all_ps.append(p_best)   obsolete
+#all_errors.append(smallest_error)         obsoleted as these were per fit but we no longer fit data files separately
+#all_int_errors.append(smallest_int_error)
 
-    # Multistart
-    starts = 2
-    smallest_error = 100000.0
-
-    for j in range(starts):
-
-        # Initialising values
-        ini_val = rand_ini_val(LDH_0)
-
-        # Initialising and limiting parameters
-        p = parameters(ini_val)
-
-        # Fitting data
-        result = minimize(fcn2min, p, args=(time_data, joined_data))
-
-        # Calculating average and integral of absolute error
-        error_list = fcn2min(p, time_data, joined_data)
-        abs_error_list = map(abs, error_list)
-        ave_abs_error = sum(abs_error_list)/len(error_list)
-        torque_error_list = fcn2min_torque(p, time_data, torque_data)
-        abs_torque_error_list = map(abs, torque_error_list)
-        int_abs_error = trapz(abs_torque_error_list, dx=0.017)
-
-        # Check error and save parameters
-        smallest_error = min([smallest_error, ave_abs_error])
-        if smallest_error == ave_abs_error:
-            p_best = p
-            smallest_int_error = int_abs_error
-
-        print(j + 1)
-
-    #Storing parameter and error values
-    all_ps.append(p_best)
-    all_errors.append(smallest_error)
-    all_int_errors.append(smallest_int_error)
-
-    print('Completed Fit ',(i + 1))
-    print('__________________________')
+print('Completed Fit ')
+print('__________________________')
 
 elapsed = tm() - t
 print('*******************')
 print('elapsed time (min) =', elapsed/60.)
+
+

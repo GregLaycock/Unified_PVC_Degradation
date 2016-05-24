@@ -177,8 +177,13 @@ def joined_data():
 
         # Trimming data
         c = cuts(torque_data)
-        time_data = trim(time_data, c)
         temp_data = trim(temp_data, c)
         torque_data = trim(torque_data, c)
         #Joining data
         return append(norm_and_join(torque_data, temp_data))
+
+
+def fcn3min(p,time_sets,LDH_inits,Joined_data):
+    model = joined_sim(p,LDH_inits,time_sets)
+    data = Joined_data
+    return model - data
