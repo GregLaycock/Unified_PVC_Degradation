@@ -1,10 +1,10 @@
-from datahandling import DataFile, alldatafiles, cuts, trim, file_parse
+import os.path
+
+from datahandling import datadir, DataFile, alldatafiles, cuts, trim, file_parse
 from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
 from time import time as tm
-from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
-from Adjust_Kinetics import *
 from Simulation import *
 # #### Loading all files
 
@@ -43,68 +43,55 @@ for i,lis in enumerate(time_sets):
 Joined_data = joined_data()
 
 # Multistart
-starts = 2
-smallest_error = 100000.0
-for j in range(starts):
-
-    print 'currently on start', j + 1
-    # Initialising values
-    ini_val = rand_ini_val()
-
-    # Initialising and limiting parameters
-    p = parameters(ini_val)
-
-    # Fitting data
-    result = minimize(fcn3min, p, args=(time_sets,LDH_inits,Joined_data))
-
-    # Calculating average and integral of absolute error
-    error_list = fcn3min(p, time_sets,LDH_inits, Joined_data)
-    abs_error_list = map(abs, error_list)
-    ave_abs_error = sum(abs_error_list)/len(error_list)
-    int_abs_error = trapz(abs_error_list, dx=0.017)
-
-    # Check error and save parameters
-    smallest_error = min([smallest_error, ave_abs_error])
-    if smallest_error == ave_abs_error:
-        p_best = p
-        smallest_int_error = int_abs_error
-
-    print 'completed start', j + 1
-
-#Storing parameter and error values
-   #all_ps.append(p_best)   obsolete
-#all_errors.append(smallest_error)         obsoleted as these were per fit but we no longer fit data files separately
-#all_int_errors.append(smallest_int_error)
-
-print 'Completed Fit '
-print('__________________________')
-
-elapsed = tm() - t
-print('*******************')
-print 'elapsed time (min) =', elapsed/60.
-fitted_parameters = p_best
-
-para_V = parameter_vectors(fitted_parameters)
-
-from pandas import DataFrame
-
-para_frame = DataFrame.from_records(para_V, index=figure_heads).transpose()
-
-para_frame.mean(axis=0)
 
 
-# Upper boundary values for each parameter = mean + 2.standard deviation
+def run_fit(time_sets,LDH_inits,Joined_data,starts):
+    smallest_error = 100000.0
+    for j in range(starts):
 
+        print 'currently on start', j + 1
+        # Initialising values
+        ini_val = rand_ini_val()
 
-# In[12]:
+        # Initialising and limiting parameters
+        p = parameters(ini_val)
 
-para_frame['parameters and errors from fitting for joined curve representing all data'] = 0
-para_frame['Average of Absolute Error'] = ave_abs_error
-para_frame['Integral of the Absolute Error'] = int_abs_error
+        # Fitting data
+        result = minimize(fcn3min, p, args=(time_sets,LDH_inits,Joined_data))
 
+        # Calculating average and integral of absolute error
+        error_list = fcn3min(p, time_sets,LDH_inits, Joined_data)
+        abs_error_list = map(abs, error_list)
+        ave_abs_error = sum(abs_error_list)/len(error_list)
+        int_abs_error = trapz(abs_error_list, dx=0.017)
 
-# Writing DataFrame to csv
+        # Check error and save parameters
+        smallest_error = min([smallest_error, ave_abs_error])
+        if smallest_error == ave_abs_error:
+            p_best = p
+            smallest_int_error = int_abs_error
 
-# In[13]:
+        print 'completed start', j + 1
 
-para_frame.to_csv('all_parameters_1.csv')
+    #Storing parameter and error values
+       #all_ps.append(p_best)   obsolete
+    #all_errors.append(smallest_error)         obsoleted as these were per fit but we no longer fit data files separately
+    #all_int_errors.append(smallest_int_error)
+
+    print 'Completed Fit '
+    print('__________________________')
+
+    elapsed = tm() - t
+    print('*******************')
+    print 'elapsed time (min) =', elapsed/60.
+    return p_best, smallest_int_error
+
+parfilename = os.path.join(datadir, 'parameters.json')
+
+if __name__ == "__main__":
+    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,2)
+
+    # Write parameters to file:
+    with open(parfilename, 'w') as parfile:
+        fitted_parameters.dump(parfile)
+
