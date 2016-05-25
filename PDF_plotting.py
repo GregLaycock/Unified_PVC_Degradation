@@ -6,14 +6,19 @@
 # In[5]:
 
 from datahandling import DataFile, alldatafiles, cuts, trim, file_parse
-from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
 from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
 from Adjust_Kinetics import *
-from Fit_parameters import fitted_parameters, LDH_inits,all_LDH_type,smallest_int_error
+from Fit_parameters import parfilename, LDH_inits, all_LDH_type
 from Simulation import model_curves
+from matplotlib import pyplot as plt
+
+import lmfit
+
+parameters_to_csv = False
+
 # #### Loading all files
 
 # In[6]:
@@ -29,6 +34,9 @@ no_files = len(files)
 
 t = tm()
 
+# Read parameters from file
+fitted_parameters = lmfit.Parameters()
+fitted_parameters.load(open(parfilename))
 
 with PdfPages('all_curves_1.pdf') as pdf:
     for i, f in enumerate(files):
@@ -78,6 +86,10 @@ with PdfPages('all_curves_1.pdf') as pdf:
         pdf.savefig(fig_temp)
         pdf.savefig(fig_species)
 
+        plt.close(fig_temp)
+        plt.close(fig_torque)
+        plt.close(fig_species)
+
 elapsed = tm() - t
 print('*******************')
 print('elapsed time (min) =', elapsed/60.)
@@ -86,72 +98,70 @@ print('elapsed time (min) =', elapsed/60.)
 # #### Generating parameter vectors and plotting
 
 # In[4]:
-
-para_V = parameter_vectors(fitted_parameters)
-
-
-# In[5]:
-import Adjust_Kinetics
-figure_headings = Adjust_Kinetics.figure_heads
-
-# In[6]:
-
-#for h, ps in zip(figure_headings, para_V):
- #   figure().suptitle(h)
-  #  plot(ps, '.')
+if parameters_to_csv:
+    # XXX This is currently broken
+    para_V = parameter_vectors(fitted_parameters)
 
 
-# ####Placing parameters into DataFrame
+    # In[5]:
+    import Adjust_Kinetics
+    figure_headings = Adjust_Kinetics.figure_heads
 
-# In[7]:
+    # In[6]:
 
-from pandas import DataFrame
-
-
-# In[8]:
-
-para_frame = DataFrame.from_records(para_V, index=figure_headings).transpose()
-
-
-# Mean values of each parameter
-
-# In[9]:
-
-para_frame.mean(axis=0)
+    #for h, ps in zip(figure_headings, para_V):
+     #   figure().suptitle(h)
+      #  plot(ps, '.')
 
 
-# Upper boundary values for each parameter = mean + 2.standard deviation
+    # ####Placing parameters into DataFrame
 
-# In[10]:
+    # In[7]:
 
-upper_bounds = para_frame.mean(axis=0) + 2*para_frame.std(axis=0)
-upper_bounds
-
-
-# In[11]:
-
-lower_bounds = para_frame.mean(axis=0) - 2*para_frame.std(axis=0)
-lower_bounds
+    from pandas import DataFrame
 
 
-# Adding columns for LDH type and Average Absolute Error to DataFrame. 
-# -Note: the Ave Abs Error is the error on the joined curve with the number ranges equated
+    # In[8]:
 
-# In[12]:
-
-para_frame['parameters and errors from fitting for joined curve representing all data'] = 0
-para_frame['Average of Absolute Error'] = Fit_parameters.ave_abs_error
-para_frame['Integral of the Absolute Error'] = Fit_parameters.int_abs_error
+    para_frame = DataFrame.from_records(para_V, index=figure_headings).transpose()
 
 
-# Writing DataFrame to csv
+    # Mean values of each parameter
 
-# In[13]:
+    # In[9]:
 
-para_frame.to_csv('all_parameters_1.csv')
+    para_frame.mean(axis=0)
 
 
-# In[ ]:
+    # Upper boundary values for each parameter = mean + 2.standard deviation
+
+    # In[10]:
+
+    upper_bounds = para_frame.mean(axis=0) + 2*para_frame.std(axis=0)
+    upper_bounds
+
+
+    # In[11]:
+
+    lower_bounds = para_frame.mean(axis=0) - 2*para_frame.std(axis=0)
+    lower_bounds
+
+
+    # Adding columns for LDH type and Average Absolute Error to DataFrame.
+    # -Note: the Ave Abs Error is the error on the joined curve with the number ranges equated
+
+    # In[12]:
+
+    para_frame['parameters and errors from fitting for joined curve representing all data'] = 0
+    para_frame['Average of Absolute Error'] = Fit_parameters.ave_abs_error
+    para_frame['Integral of the Absolute Error'] = Fit_parameters.int_abs_error
+
+
+    # Writing DataFrame to csv
+
+    # In[13]:
+
+    para_frame.to_csv('all_parameters_1.csv')
 
 
 

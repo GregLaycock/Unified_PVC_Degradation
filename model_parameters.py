@@ -10,10 +10,7 @@ def parameters(ini_values):
 	
 def unpack_parameters(p):
     #unpack parameter values from parameter structure
-    lis = []
-    for i in p:
-        lis.append(p[i].value)
-    return lis
+    return p.valuesdict().values()
 
 def parameter_vectors(all_ps):
     all = []

@@ -1,10 +1,10 @@
-from datahandling import DataFile, alldatafiles, cuts, trim, file_parse
+import os.path
+
+from datahandling import datadir, DataFile, alldatafiles, cuts, trim, file_parse
 from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
 from time import time as tm
-from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
-from Adjust_Kinetics import *
 from Simulation import *
 # #### Loading all files
 
@@ -86,5 +86,12 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts):
     print 'elapsed time (min) =', elapsed/60.
     return p_best, smallest_int_error
 
-fitted_parameters,smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,2)
+parfilename = os.path.join(datadir, 'parameters.json')
+
+if __name__ == "__main__":
+    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,2)
+
+    # Write parameters to file:
+    with open(parfilename, 'w') as parfile:
+        fitted_parameters.dump(parfile)
 
