@@ -12,7 +12,7 @@ from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
 from Adjust_Kinetics import *
-from Fit_parameters import fitted_parameters, LDH_inits,all_LDH_type,time_sets
+from Fit_parameters import fitted_parameters, LDH_inits,all_LDH_type,smallest_int_error
 from Simulation import model_curves
 # #### Loading all files
 
@@ -43,7 +43,7 @@ with PdfPages('all_curves_1.pdf') as pdf:
         #Plotting to pdf
 
         curves = model_curves(fitted_parameters, time_data, LDH_inits[i])
-   #     HCl, LDH, poly_act, radical, prim_stab, deg_poly, x_link, T, Tm, mu, torque = curves
+
         
         title = 'Run ' + str(i + 1) + ', LDH type: ' + all_LDH_type[i] + ', initial LDH: ' + str(LDH_inits[i])
         from matplotlib.pyplot import *

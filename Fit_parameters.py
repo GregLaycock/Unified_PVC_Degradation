@@ -43,46 +43,48 @@ for i,lis in enumerate(time_sets):
 Joined_data = joined_data()
 
 # Multistart
-starts = 2
-smallest_error = 100000.0
-
-for j in range(starts):
-
-    print 'currently on start', j + 1
-    # Initialising values
-    ini_val = rand_ini_val()
-
-    # Initialising and limiting parameters
-    p = parameters(ini_val)
-
-    # Fitting data
-    result = minimize(fcn3min, p, args=(time_sets,LDH_inits,Joined_data))
-
-    # Calculating average and integral of absolute error
-    error_list = fcn3min(p, time_sets,LDH_inits, Joined_data)
-    abs_error_list = map(abs, error_list)
-    ave_abs_error = sum(abs_error_list)/len(error_list)
-    int_abs_error = trapz(abs_error_list, dx=0.017)
-
-    # Check error and save parameters
-    smallest_error = min([smallest_error, ave_abs_error])
-    if smallest_error == ave_abs_error:
-        p_best = p
-        smallest_int_error = int_abs_error
-
-    print 'completed start', j + 1
-
-#Storing parameter and error values
-   #all_ps.append(p_best)   obsolete
-#all_errors.append(smallest_error)         obsoleted as these were per fit but we no longer fit data files separately
-#all_int_errors.append(smallest_int_error)
-
-print 'Completed Fit '
-print('__________________________')
-
-elapsed = tm() - t
-print('*******************')
-print 'elapsed time (min) =', elapsed/60.
 
 
-fitted_parameters = p_best
+def run_fit(time_sets,LDH_inits,Joined_data,starts):
+    smallest_error = 100000.0
+    for j in range(starts):
+
+        print 'currently on start', j + 1
+        # Initialising values
+        ini_val = rand_ini_val()
+
+        # Initialising and limiting parameters
+        p = parameters(ini_val)
+
+        # Fitting data
+        result = minimize(fcn3min, p, args=(time_sets,LDH_inits,Joined_data))
+
+        # Calculating average and integral of absolute error
+        error_list = fcn3min(p, time_sets,LDH_inits, Joined_data)
+        abs_error_list = map(abs, error_list)
+        ave_abs_error = sum(abs_error_list)/len(error_list)
+        int_abs_error = trapz(abs_error_list, dx=0.017)
+
+        # Check error and save parameters
+        smallest_error = min([smallest_error, ave_abs_error])
+        if smallest_error == ave_abs_error:
+            p_best = p
+            smallest_int_error = int_abs_error
+
+        print 'completed start', j + 1
+
+    #Storing parameter and error values
+       #all_ps.append(p_best)   obsolete
+    #all_errors.append(smallest_error)         obsoleted as these were per fit but we no longer fit data files separately
+    #all_int_errors.append(smallest_int_error)
+
+    print 'Completed Fit '
+    print('__________________________')
+
+    elapsed = tm() - t
+    print('*******************')
+    print 'elapsed time (min) =', elapsed/60.
+    return p_best, smallest_int_error
+
+fitted_parameters,smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,2)
+
