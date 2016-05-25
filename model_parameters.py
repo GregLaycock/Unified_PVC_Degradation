@@ -17,14 +17,11 @@ def unpack_parameters(p):
 
 def parameter_vectors(all_ps):
     all = []
-    for i, lis in enumerate(all_ps[0]):
+    for i in all_ps:
         all.append([])
-
-    
-    for j in range(len(all_ps)):
-        para = unpack_parameters(all_ps[j])
-        for i,val in enumerate(para):
-            all[i].append(val)
+    para = unpack_parameters(all_ps)
+    for i,val in enumerate(para):
+        all[i].append(val)
 
     return all
 
