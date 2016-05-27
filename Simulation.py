@@ -17,7 +17,8 @@ def model_curves(p, time,LDH_0):                                   # remove LDH_
 
     plot_vals = {}
     C,components = add_component(Adjust_Kinetics.components)
-
+    C['LDH'] = LDH_0
+    components.append('LDH')
     #unpack parameter values from parameter structure
     para = unpack_parameters(p)
     k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q, prim_stab_0 = para
@@ -31,16 +32,11 @@ def model_curves(p, time,LDH_0):                                   # remove LDH_
    
     # temperature curve parameters
     R = 8.314
-    	
-    # initial concentrations
-    HCl_0 = 0.
-    poly_act_0 = 5.
     
     # initial temperatures
     T_0 = 125.
     Tm_0 = 200.
-    
-#    from rxn_rates import r1, r2, r3, r4, r5, r6
+
     from Physics import mu, torque, dTdt,dTmdt
 
 
@@ -85,9 +81,8 @@ def model_curves(p, time,LDH_0):                                   # remove LDH_
     plot_vals['T'] = sol2[T_index]
     plot_vals['Tm'] = sol2[T_index + 1]
     import Physics
-    plot_vals['mu'] = Physics.mu_plot(mu_0, E, R, plot_vals['T'], k9, k10, k14, k15, C_vals)
+    plot_vals['mu'] = Physics.mu_plot(mu_0, E, R, plot_vals['T'], k9, k10, k14, k15, C_vals,q)
     plot_vals['Torq'] = Physics.Torq_plot(plot_vals['mu'],k1)
-
     return plot_vals
 
 
@@ -101,20 +96,20 @@ def temp_curve(p, time):
     curves = model_curves(p, time)
     return curves['T']
 
-def fcn2min_torque(p, time, data):
-    model = torque_curve(p, time)
-    return model - data
+#def fcn2min_torque(p, time, data):
+#    model = torque_curve(p, time)
+#    return model - data
 	
-def fcn2min_temp(p, time, data):
-    model = temp_curve(p, time)
-    return model - data
+#def fcn2min_temp(p, time, data):
+#    model = temp_curve(p, time)
+#    return model - data
 
-def fcn2min(p, time, data):
-    curves = model_curves(p, time)
-    torc = curves['Torq']
-    tempc = curves['T']
-    model = joined_curves(torc,tempc)
-    return model - data
+#def fcn2min(p, time, data):             #obsolete
+#    curves = model_curves(p, time)
+#    torc = curves['Torq']
+#    tempc = curves['T']
+#    model = joined_curves(torc,tempc)
+#    return model - data
 
 
 def num_range_equal(list, m, s):

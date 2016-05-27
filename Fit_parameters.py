@@ -32,7 +32,7 @@ all_int_errors = []
 LDH_inits = []
 all_LDH_type = []
 for i,lis in enumerate(time_sets):
-    LDH_inits.append(1.3)
+    LDH_inits.append(0.3)
     all_LDH_type.append('mystery_LDH')
 
 #this should be implemented later once the files have been renamed
@@ -89,7 +89,7 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts):
 parfilename = os.path.join(datadir, 'parameters.json')
 
 if __name__ == "__main__":
-    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,2)
+    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,50)
 
     # Write parameters to file:
     with open(parfilename, 'w') as parfile:
