@@ -10,7 +10,7 @@ from PVC_deg_kinetics import *
 
 # Function accepting parameters to give the modelled curves
 
-def model_curves(p, time,LDH_0):                                   # remove LDH_0 as a dynamic parameter
+def model_curves(p, time,LDH_0,prim_stab_0):                                   # remove LDH_0 as a dynamic parameter
     from numpy import linspace, array, append, squeeze, zeros
     from scipy.integrate import odeint
     from model_parameters import unpack_parameters
@@ -18,10 +18,12 @@ def model_curves(p, time,LDH_0):                                   # remove LDH_
     plot_vals = {}
     C,components = add_component(Adjust_Kinetics.components)
     C['LDH'] = LDH_0
+    C['ps'] = prim_stab_0
     components.append('LDH')
+    components.append('ps')
     #unpack parameter values from parameter structure
     para = unpack_parameters(p)
-    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q, prim_stab_0 = para
+    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q = para
 
     n = 5
 
@@ -153,12 +155,13 @@ def LDH_zeros():
         LDH_inits.append(LDH_0)
     return LDH_inits
 
-def joined_sim(p,LDH_inits,time_sets):                          # p = parameters with ldh_0 removed which should still be done.
+def joined_sim(p,LDH_inits,time_sets,PS_inits):                          # p = parameters with ldh_0 removed which should still be done.
     from numpy import append
     joined = []
     for i,ldh_0 in enumerate(LDH_inits):        # 1 initial ldh per data file
         time = time_sets[i]
-        sim_res = model_curves(p,time,ldh_0)
+        ps_0 = PS_inits[i]
+        sim_res = model_curves(p,time,ldh_0,ps_0)
         torc = sim_res['Torq']
         tempc = sim_res['T']
         joined_i = norm_and_join(torc,tempc)
@@ -180,8 +183,8 @@ def joined_data():
         return append(joined, joined_i)
 
 
-def fcn3min(p,time_sets,LDH_inits,Joined_data):
-    model = joined_sim(p,LDH_inits,time_sets)
+def fcn3min(p,time_sets,LDH_inits,Joined_data,PS_inits):
+    model = joined_sim(p,LDH_inits,time_sets,PS_inits)
     data = Joined_data
     return model - data
 

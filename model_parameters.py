@@ -40,4 +40,4 @@ def rand_ini_val():
         new_val = lb + random()*(ub - lb)
         ini_val.append(new_val)
     
-    return append(ini_val, [0.0372, 6208.6, 2.5, 1.3])
+    return append(ini_val, [0.0372, 6208.6, 2.5])          #note ldh_0 and ps_0 were removed as parameters

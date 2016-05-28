@@ -17,7 +17,7 @@ components = {'HCL': 0,      # With initial
 #               'LDH': 1.3,
                'pas': 5,
                'rad': 0,
-               'ps': 1.3,
+ #              'ps': 1.3,       # LDH and ps were varied
                'dp': 0,
                'xl': 0,
                'double': 0,
@@ -26,49 +26,49 @@ components = {'HCL': 0,      # With initial
 
 
 def params(ini_values):
-    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11,k12, k13, k14, k15, UA, mu_0, E, q, prim_stab_0 = ini_values
+    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11,k12, k13, k14, k15, UA, mu_0, E, q = ini_values
     #          (         Name,       Value,  Vary,    Min,     Max)
-    lis =      [(         'k1',          k1,  True,    0.0,     2.1),
-                (         'k2',          k2,  True,    0.0,    46.0),
-                (         'k3',          k3,  True,    0.0,     6.0),
-                (         'k4',          k4,  True,    0.0,     2.1),
-                (         'k5',          k5,  True,    0.0,    0.03),
-                (         'k6',          k6,  True,    0.0,    39.0),
-                (         'k7',          k7,  True,    0.0,     2.7),
-                (         'k8',          k8,  True,    0.0,     7.9),
-                (         'k9',          k9,  True,    0.0,    13.1),
-                (        'k10',         k10,  True,    0.0,    10.9),
-                (        'k11',         k11,  True,    0.0,     3.6),
-                (      'k12',           k12,  True,    0.,     20),
-                (      'k13',           k13,  True,    0.,     20),
-                (      'k14',           k14,  True,    0.,     20),
-                (      'k15',           k15,  True,    0.,     20),
+    lis =      [(         'k1',          k1,  True,    1.0,     3),
+                (         'k2',          k2,  True,    5.0,    50),
+                (         'k3',          k3,  True,    0.0,     10),
+                (         'k4',          k4,  True,    0.0,     3),
+                (         'k5',          k5,  True,    0.0,    0.05),
+                (         'k6',          k6,  True,    0.0,    50),
+                (         'k7',          k7,  True,    0.0,     3),
+                (         'k8',          k8,  True,    0.0,     10),
+                (         'k9',          k9,  True,    0.0,    20),
+                (        'k10',         k10,  True,    0.0,    20.9),
+                (        'k11',         k11,  True,    0.0,     10),
+                (      'k12',           k12,  True,    0.,     1),      # half rate
+                (      'k13',           k13,  True,    0.,     1),     # double rate
+                (      'k14',           k14,  True,    0.,     50),     # half effect
+                (      'k15',           k15,  True,    0.,     50),       # double effect
                 (         'UA',          UA,  True,    275.0,  402.0),
                 (       'mu_0',        mu_0,  False,   0.0,    0.1),
                 (          'E',           E,  False,   5000.0, 7000),
-                (          'q',           q,  False,   0.0,    17.0),
-                ('prim_stab_0', prim_stab_0,  False,   0.5,    1.3)]
+                (          'q',           q,  False,   0.0,    17.0)]
+      #          ('prim_stab_0', prim_stab_0,  False,   0.5,    1.3)]         # removed as parameters
       #          (      'LDH_0',       LDH_0,  False,   None,   None)]
                
     return lis
 
 
 
-limits = [[0.0, 2.1],
-          [0.0, 46.0],
-          [0.0, 6.0],
-          [0.0, 2.1],
-          [0.0, 0.03],
-          [0.0, 39.0],
-          [0.0, 2.7],
-          [0.0, 7.9],
-          [0.0, 13.1],
-          [0.0, 10.9],
-          [0.0, 3.6],
-          [0.,  20.],
-          [0.,  20.],
-          [0.,  20.],
-          [0.,  20.],
+limits = [[1, 3],
+          [5, 50],
+          [0.0, 10],
+          [0.0, 3],
+          [0.0, 0.05],
+          [0.0, 50],
+          [0.0, 3],
+          [0.0, 10],
+          [0.0, 20],
+          [0.0, 20.],
+          [0.0, 10],
+          [0.,  1.],         #half rate
+          [0.,  1.],        #double rate
+          [0.,  50.],          # half effect
+          [0.,  50.],            # double effect
           [275.0, 402.0]]
 
 

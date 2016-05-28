@@ -11,7 +11,7 @@ from time import time as tm
 from matplotlib.backends.backend_pdf import PdfPages
 from numpy import append,trapz
 from Adjust_Kinetics import *
-from Fit_parameters import parfilename, LDH_inits, all_LDH_type
+from Fit_parameters import parfilename, LDH_inits, all_LDH_type,PS_inits,time_sets
 from Simulation import model_curves
 from matplotlib import pyplot as plt
 
@@ -34,12 +34,13 @@ no_files = len(files)
 
 t = tm()
 
+
 # Read parameters from file
 fitted_parameters = lmfit.Parameters()
 fitted_parameters.load(open(parfilename))
 
 with PdfPages('all_curves_1.pdf') as pdf:
-    for i, f in enumerate(files):
+    for i, f in enumerate([files[0]]):
         time_data, temp_data, torque_data = DataFile(f).simple_data()
         
         # Trimming data
@@ -50,7 +51,7 @@ with PdfPages('all_curves_1.pdf') as pdf:
 
         #Plotting to pdf
 
-        curves = model_curves(fitted_parameters, time_data, LDH_inits[i])
+        curves = model_curves(fitted_parameters, time_data, LDH_inits[i],PS_inits[i])
 
         
         title = 'Run ' + str(i + 1) + ', LDH type: ' + all_LDH_type[i] + ', initial LDH: ' + str(LDH_inits[i])
