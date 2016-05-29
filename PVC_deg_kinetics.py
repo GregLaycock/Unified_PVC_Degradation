@@ -19,26 +19,24 @@ def rate(tup, C):
     stoic = tup[0]
     order = tup[1]
     k = tup[2]
-    comps = list(stoic.keys())
     r = k
 
-    if 'auto' in stoic.keys():
+    if 'auto' in stoic:
         r *= C[stoic['auto']]**order
 
-    for i in comps:
-        if 'double' in stoic.keys() or 'half' in stoic.keys():            # to implement double and half only occuring in absence of ps
+    # to implement double and half only occuring in absence of ps
+    double_or_half = 'double' in stoic or 'half' in stoic
+
+    for i in stoic:
+        if double_or_half:
             if C['ps'] <= 0.01:
-                r*= C[i]**order
+                r *= C[i]**order
             else:
                 r == 0
 
         if i != 'auto':
             if stoic[i] <= 0:
                 r *= C[i]**order
-            else:
-                pass
-        else:
-            pass
 
     return r
 
@@ -51,11 +49,8 @@ def mol_bal(components, reactions, C):
             rxn_rate = rate(j, C)
             stoic = j[0]
 
-            if i in stoic.keys():
+            if i in stoic:
                 delta[i] += rxn_rate*stoic[i]
-
-            else:
-                pass
 
     return delta
 
