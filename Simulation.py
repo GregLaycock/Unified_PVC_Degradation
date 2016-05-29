@@ -23,8 +23,10 @@ def model_curves(p, time,LDH_0,prim_stab_0):                                   #
     components.append('ps')
     #unpack parameter values from parameter structure
     para = unpack_parameters(p)
-    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, UA, mu_0, E, q = para
+    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12,k13, k14, k15, UA, mu_0, E, q,pas_0 = para
 
+    C['pas'] = pas_0
+    components.append('pas')
     n = 5
 
     # Reactions( can be edited and rest will take care of itself. just remember to adjust paramters, limits and initials in Adjust_parameters.py!!!)
@@ -171,7 +173,9 @@ def joined_data():
     from numpy import append
     files = alldatafiles()
     joined = []
+    n = len(files) - 1
     for i, f in enumerate(files):
+                                                         # used for fitting only one file
         time_data, temp_data, torque_data = DataFile(f).simple_data()
 
         # Trimming data
@@ -190,7 +194,9 @@ def fcn3min(p,time_sets,LDH_inits,Joined_data,PS_inits):
 
 def get_timesets(files):
     time_sets = []
+    n = len(files) -1 # final index for while
     for i, f in enumerate(files):
+
         time_data, temp_data, torque_data = DataFile(f).simple_data()
 
         # Trimming data

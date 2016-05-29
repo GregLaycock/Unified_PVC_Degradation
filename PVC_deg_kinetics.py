@@ -26,6 +26,11 @@ def rate(tup, C):
         r *= C[stoic['auto']]**order
 
     for i in comps:
+        if 'double' in stoic.keys() or 'half' in stoic.keys():            # to implement double and half only occuring in absence of ps
+            if C['ps'] <= 0.01:
+                r*= C[i]**order
+            else:
+                r == 0
 
         if i != 'auto':
             if stoic[i] <= 0:

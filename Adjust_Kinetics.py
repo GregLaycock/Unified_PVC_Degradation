@@ -8,14 +8,14 @@ def rxns(parameters):
                  ({'rad': -1, 'ps': -1}, 1, k6),
                  ({'rad': -1, 'dp': 1}, 1, k7),
                  ({'rad': -1, 'xl': 1}, 1, k8),
-                 ({'rad': -1, 'half': 2}, 2, k12),          # half
+                 ({'rad': -1, 'half': 2}, 2, k12),         # half
                  ({'rad': -2, 'double': 1}, 1, k13)]
 
     return reactions
 
 components = {'HCL': 0,      # With initial
 #               'LDH': 1.3,
-               'pas': 5,
+  #             'pas': 10,
                'rad': 0,
  #              'ps': 1.3,       # LDH and ps were varied
                'dp': 0,
@@ -26,27 +26,29 @@ components = {'HCL': 0,      # With initial
 
 
 def params(ini_values):
-    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11,k12, k13, k14, k15, UA, mu_0, E, q = ini_values
+    k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11,k12,k13, k14, k15, UA, pas_0, mu_0, E, q = ini_values
     #          (         Name,       Value,  Vary,    Min,     Max)
-    lis =      [(         'k1',          k1,  True,    1.0,     3),
-                (         'k2',          k2,  True,    5.0,    50),
-                (         'k3',          k3,  True,    0.0,     10),
-                (         'k4',          k4,  True,    0.0,     3),
-                (         'k5',          k5,  True,    0.0,    0.05),
-                (         'k6',          k6,  True,    0.0,    50),
-                (         'k7',          k7,  True,    0.0,     3),
-                (         'k8',          k8,  True,    0.0,     10),
-                (         'k9',          k9,  True,    0.0,    20),
-                (        'k10',         k10,  True,    0.0,    20.9),
-                (        'k11',         k11,  True,    0.0,     10),
-                (      'k12',           k12,  True,    0.,     1),      # half rate
-                (      'k13',           k13,  True,    0.,     1),     # double rate
-                (      'k14',           k14,  True,    0.,     50),     # half effect
-                (      'k15',           k15,  True,    0.,     50),       # double effect
+    lis =      [(         'k1',          k1,  True,    1.0,     3),             #k1*mu = torque
+                (         'k2',          k2,  True,    8.0,    50),             # thermocouple
+                (         'k3',          k3,  True,    0.0,     10),           #HCL ---> LDH.HCL
+                (         'k4',          k4,  True,    0.0,     10),            # HCL + pas --> 2HCL plus radical
+                (         'k5',          k5,  True,    0.0,    0.1),          # pas --> rad + HCL       # should be very low since once HCL initiates it goes ham
+                (         'k6',          k6,  True,    100.,    500),            # rad +ps --> rad.ps   this should be high as half and double kinetics must only happen once ps is gone
+                (         'k7',          k7,  True,    0.0,     10),             # rad ---> degraded (ups viscosity should happen all the time not only when ps is gone)
+                (         'k8',          k8,  True,    0.0,     20),             # rad ---> xl (similar to degraded)
+                (         'k9',          k9,  True,    0.0,    10),                # effect of degraded on mu
+                (        'k10',         k10,  True,    0.0,    10),             # effect of xl on mu
+                (        'k11',         k11,  True,    2,     20),                #effect of temp on mu
+                (      'k12',           k12,  True,    0.,     20),      # half rate
+                (      'k13',           k13,  True,    0.,     20),     # double rate
+                (      'k14',           k14,  True,    0.,     200),     # half effect
+                (      'k15',           k15,  True,    0.,     100),       # double effect
                 (         'UA',          UA,  True,    275.0,  402.0),
-                (       'mu_0',        mu_0,  False,   0.0,    0.1),
-                (          'E',           E,  False,   5000.0, 7000),
-                (          'q',           q,  False,   0.0,    17.0)]
+                (      'pas_0',       pas_0,  False ,   0.0,    6),
+                (       'mu_0',        mu_0,  False,   0.0372,    0.03721),
+                (          'E',           E,  False,   6208.5, 6208.6),
+                (          'q',           q,  False,   2.50,    2.51)]
+
       #          ('prim_stab_0', prim_stab_0,  False,   0.5,    1.3)]         # removed as parameters
       #          (      'LDH_0',       LDH_0,  False,   None,   None)]
                
@@ -57,19 +59,21 @@ def params(ini_values):
 limits = [[1, 3],
           [5, 50],
           [0.0, 10],
-          [0.0, 3],
-          [0.0, 0.05],
-          [0.0, 50],
-          [0.0, 3],
           [0.0, 10],
+          [0.0, 0.05],
+          [0, 500],
+          [0.0, 10],
+          [0.50, 20],
           [0.0, 20],
           [0.0, 20.],
-          [0.0, 10],
+          [0.0, 20],
           [0.,  1.],         #half rate
           [0.,  1.],        #double rate
-          [0.,  50.],          # half effect
-          [0.,  50.],            # double effect
-          [275.0, 402.0]]
+          [0.,  100.],          # half effect
+          [0.,  100.],            # double effect
+          [275.0, 402.0],
+          [1,10]]
+
 
 
 

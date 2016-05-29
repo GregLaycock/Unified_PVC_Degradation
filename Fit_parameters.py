@@ -29,8 +29,8 @@ all_int_errors = []
 #    all_LDH_type = append(all_LDH_type, LDH_type)
 
 # this is a temporary solution for LDH types and zero values
-LDH_inits = [[6.918,2.4,4.04,0.72,0.,4.268,2.19,0.989,0.3345,2.64,0.194615,0.53,3.148,0.858,1.274,0.302158,0.,3.599,1.7,1.272697][0]]
-PS_inits = [[0.421,2.8345,0.218,1.684,0.32,1.385,0.,1.048,4.7239,0.55,0.673,2.076,1.214,6.263,3.256,0.,3.959,3.534,0.655,0.][0]]
+LDH_inits = [6.918,2.4,4.04,0.72,0.,4.268,2.19,0.989,0.3345,2.64,0.194615,0.53,3.148,0.858,1.274,0.302158,0.,3.599,1.7,1.272697]
+PS_inits = [0.421,2.8345,0.218,1.684,0.32,1.385,0.,1.048,4.7239,0.55,0.673,2.076,1.214,6.263,3.256,0.,3.959,3.534,0.655,0.]
 all_LDH_type = []
 
 for i,lis in enumerate(time_sets):
@@ -67,7 +67,7 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits):
         ave_abs_error = sum(abs_error_list)/len(error_list)
         int_abs_error = trapz(abs_error_list, dx=0.017)
 
-        # Check error and save parameters
+        # Check error and save parametersreturn p_best, smallest_int_error
         smallest_error = min([smallest_error, ave_abs_error])
         if smallest_error == ave_abs_error:
             p_best = p
@@ -83,15 +83,20 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits):
     print 'Completed Fit '
     print('__________________________')
 
+
     elapsed = tm() - t
     print('*******************')
     print 'elapsed time (min) =', elapsed/60.
+    vals = unpack_parameters(p_best)
+    nms = ['k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8', 'k9', 'k10', 'k11', 'k12', 'k13', 'k14', 'k15', 'UA','pas_0', 'mu_0', 'E', 'q']
+    for i, name in enumerate(nms):
+        print name,vals[i]
     return p_best, smallest_int_error
 
-parfilename = os.path.join(datadir, 'parameters.json')
+parfilename = os.path.join(datadir, 'parameters_001.json')
 
 if __name__ == "__main__":
-    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,2,PS_inits)
+    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,600,PS_inits)
 
     # Write parameters to file:
     with open(parfilename, 'w') as parfile:

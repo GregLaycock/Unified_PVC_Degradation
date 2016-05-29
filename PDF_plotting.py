@@ -39,7 +39,7 @@ t = tm()
 fitted_parameters = lmfit.Parameters()
 fitted_parameters.load(open(parfilename))
 
-with PdfPages('all_curves_1.pdf') as pdf:
+with PdfPages('all_curves_01.pdf') as pdf:
     for i, f in enumerate([files[0]]):
         time_data, temp_data, torque_data = DataFile(f).simple_data()
         
@@ -54,7 +54,8 @@ with PdfPages('all_curves_1.pdf') as pdf:
         curves = model_curves(fitted_parameters, time_data, LDH_inits[i],PS_inits[i])
 
         
-        title = 'Run ' + str(i + 1) + ', LDH type: ' + all_LDH_type[i] + ', initial LDH: ' + str(LDH_inits[i])
+        title = 'Run ', str(i + 1) + ', LDH type: ' , all_LDH_type[i] + ', initial LDH: ' , str(LDH_inits[i])
+
         from matplotlib.pyplot import *
         fig_torque = figure()
         fig_torque.suptitle(title)
