@@ -9,7 +9,7 @@ from Simulation import *
 # #### Loading all files
 
 # In[6]:
-
+index = 0
 files = alldatafiles()
 no_files = len(files)
 
@@ -35,7 +35,7 @@ all_LDH_type = []
 
 for i,lis in enumerate(time_sets):
  #   LDH_inits.append(0.3)
-    all_LDH_type.append('mystery_LDH')
+    all_LDH_type.append('Hydrotalcite')
 
 #this should be implemented later once the files have been renamed
 #LDH_inits = LDH_zeros()   # this will require that the files be renamed, will test with a list later [1.3,1.3,1.3 .....]
@@ -43,11 +43,11 @@ for i,lis in enumerate(time_sets):
 
 # joining data curves( note Joined_data has a capital J and is not a function)
 Joined_data = joined_data()
-
+Single_data = single_data(index)
 # Multistart
 
 
-def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits):
+def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits,index):
     smallest_error = 100000.0
     for j in range(starts):
 
@@ -59,10 +59,10 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits):
         p = parameters(ini_val)
 
         # Fitting data
-        result = minimize(fcn3min, p, args=(time_sets,LDH_inits,Joined_data,PS_inits))
+        result = minimize(fcn4min, p, args=(time_sets,LDH_inits,Single_data,PS_inits,index))
 
         # Calculating average and integral of absolute error
-        error_list = fcn3min(p, time_sets,LDH_inits, Joined_data,PS_inits)
+        error_list = fcn4min(p, time_sets,LDH_inits, Single_data,PS_inits,index)
         abs_error_list = map(abs, error_list)
         ave_abs_error = sum(abs_error_list)/len(error_list)
         int_abs_error = trapz(abs_error_list, dx=0.017)
@@ -93,10 +93,10 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits):
         print name,vals[i]
     return p_best, smallest_int_error
 
-parfilename = os.path.join(datadir, 'parameters_001.json')
+parfilename = os.path.join(datadir, 'parameters_all_4.json')
 
 if __name__ == "__main__":
-    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,600,PS_inits)
+    fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,500,PS_inits,index)
 
     # Write parameters to file:
     with open(parfilename, 'w') as parfile:

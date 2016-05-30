@@ -9,13 +9,13 @@ def rxns(parameters):
                  ({'rad': -1, 'dp': 1}, 1, k7),
                  ({'rad': -1, 'xl': 1}, 1, k8),
                  ({'rad': -1, 'half': 2}, 2, k12),         # half
-                 ({'rad': -2, 'double': 1}, 1, k13)]
+                 ({'rad': -2, 'double': 1}, 1, k13)]       # double
 
     return reactions
 
 components = {'HCL': 0,      # With initial
 #               'LDH': 1.3,
-  #             'pas': 10,
+#               'pas': 5,
                'rad': 0,
  #              'ps': 1.3,       # LDH and ps were varied
                'dp': 0,
@@ -28,21 +28,21 @@ components = {'HCL': 0,      # With initial
 def params(ini_values):
     k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11,k12,k13, k14, k15, UA, pas_0, mu_0, E, q = ini_values
     #          (         Name,       Value,  Vary,    Min,     Max)
-    lis =      [(         'k1',          k1,  True,    1.0,     3),             #k1*mu = torque
+    lis =      [(         'k1',          k1,  True,    1.6,     2.1),             #k1*mu = torque
                 (         'k2',          k2,  True,    8.0,    50),             # thermocouple
-                (         'k3',          k3,  True,    0.0,     10),           #HCL ---> LDH.HCL
-                (         'k4',          k4,  True,    0.0,     10),            # HCL + pas --> 2HCL plus radical
+                (         'k3',          k3,  True,    0.0,     20),           #HCL ---> LDH.HCL
+                (         'k4',          k4,  True,    0.0,     20),            # HCL + pas --> 2HCL plus radical
                 (         'k5',          k5,  True,    0.0,    0.1),          # pas --> rad + HCL       # should be very low since once HCL initiates it goes ham
-                (         'k6',          k6,  True,    100.,    500),            # rad +ps --> rad.ps   this should be high as half and double kinetics must only happen once ps is gone
+                (         'k6',          k6,  True,    0.,    200),            # rad +ps --> rad.ps   this should be high as half and double kinetics must only happen once ps is gone
                 (         'k7',          k7,  True,    0.0,     10),             # rad ---> degraded (ups viscosity should happen all the time not only when ps is gone)
-                (         'k8',          k8,  True,    0.0,     20),             # rad ---> xl (similar to degraded)
-                (         'k9',          k9,  True,    0.0,    10),                # effect of degraded on mu
-                (        'k10',         k10,  True,    0.0,    10),             # effect of xl on mu
-                (        'k11',         k11,  True,    2,     20),                #effect of temp on mu
-                (      'k12',           k12,  True,    0.,     20),      # half rate
+                (         'k8',          k8,  True,    0.0,     12),             # rad ---> xl (similar to degraded)
+                (         'k9',          k9,  True,    0.0,    20),                # effect of degraded on mu
+                (        'k10',         k10,  True,    0.0,    15),             # effect of xl on mu
+                (        'k11',         k11,  True,    2,     3.6),                #effect of temp on mu
+                (      'k12',           k12,  True,    5.,     20),      # half rate
                 (      'k13',           k13,  True,    0.,     20),     # double rate
-                (      'k14',           k14,  True,    0.,     200),     # half effect
-                (      'k15',           k15,  True,    0.,     100),       # double effect
+                (      'k14',           k14,  True,    0.,   100),     # half effect
+                (      'k15',           k15,  True,    0.,     20),       # double effect
                 (         'UA',          UA,  True,    275.0,  402.0),
                 (      'pas_0',       pas_0,  False ,   0.0,    6),
                 (       'mu_0',        mu_0,  False,   0.0372,    0.03721),
@@ -56,23 +56,23 @@ def params(ini_values):
 
 
 
-limits = [[1, 3],
-          [5, 50],
-          [0.0, 10],
-          [0.0, 10],
+limits = [[1.6, 2.1],
+          [8, 50],
+          [0.0, 20],
+          [0.0, 20],
           [0.0, 0.05],
-          [0, 500],
-          [0.0, 10],
-          [0.50, 20],
-          [0.0, 20],
-          [0.0, 20.],
-          [0.0, 20],
-          [0.,  1.],         #half rate
-          [0.,  1.],        #double rate
+          [30, 200],
+          [5.0, 20],
+          [8., 20],
+          [10.0, 20],
+          [10.0, 20.],
+          [2, 3.6],
+          [0.,  20.],         #half rate
+          [0.,  20.],        #double rate
           [0.,  100.],          # half effect
-          [0.,  100.],            # double effect
+          [0.,  20.],            # double effect
           [275.0, 402.0],
-          [1,10]]
+          [5,6]]                 # pas_0
 
 
 
