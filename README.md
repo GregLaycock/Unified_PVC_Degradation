@@ -16,4 +16,10 @@ Instructions
 
 . The limits for the parameters can be set using Adjust_parameters.py.  
 
-3.The fitting routine runs with the 'Fit_parameters_to_multi_files.py' . Simply run the code which outputs a PDF with figures of all the fits and a CSV file with the fitted parameters and other relevant information. The  PDF and CSV file names (ie 'all_curves_.pdf' or 'all_parameters_.csv) can be renamed as required  
+3.The fitting routine runs with the 'Fit_parameters_to_multi_files.py' . Simply run the code which outputs a json file with all the fitted parameters stored in it. 
+
+4. plotting is done via PDF_plotting.py which simulates curves for all the diferent initial conditions in the experiments and plots them vs the data files. The plots are stored in a PDF file which you can set the name of.
+
+5. note that currently support for datafile name reading is inactive and you will have to specify LDH_inits and PS_inits for the different data files yourself. 
+
+ENJOY its a lot of fun I promise....its really not...like seriously your soul is going to be eaten alive by the 10th run. Good luck
