@@ -6,6 +6,12 @@ import pandas
 # read configuration file and expand ~ to user directory
 with open('config.json') as f:
     config = json.load(f)
+
+requiredfields = ['datadir', 'parfilename']
+
+for field in requiredfields:
+    assert field in config, "The field '{}' was not found in the config.json file".format(field)
+
 datadir = os.path.expanduser(config['datadir'])
 
 def alldatafiles():

@@ -1,6 +1,6 @@
 import os.path
 
-from datahandling import datadir, DataFile, alldatafiles, cuts, trim, file_parse
+from datahandling import datadir, config
 from lmfit import minimize, report_fit
 from model_parameters import parameters, parameter_vectors, unpack_parameters, rand_ini_val
 from time import time as tm
@@ -93,7 +93,7 @@ def run_fit(time_sets,LDH_inits,Joined_data,starts,PS_inits,index):
         print name,vals[i]
     return p_best, smallest_int_error
 
-parfilename = os.path.join(datadir, 'parameters_all_4.json')
+parfilename = os.path.join(datadir, config['parfilename'])
 
 if __name__ == "__main__":
     fitted_parameters, smallest_int_error = run_fit(time_sets,LDH_inits,Joined_data,500,PS_inits,index)
